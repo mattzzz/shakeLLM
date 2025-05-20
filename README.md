@@ -199,10 +199,6 @@ The models will train on the Shakespeare dataset and can generate new text given
    - Include performance benchmarks
    - Add model comparison results
 
-## License
-
-[Add your chosen license here]
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. 
