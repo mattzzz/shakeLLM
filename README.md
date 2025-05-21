@@ -85,11 +85,19 @@ to be, or not to be to your lordship upon a man? a widow. the brother the shallo
 ## Future Improvements
 
 **Model Enhancements**
+   - Add Top-k Sampling or Temperature Scaling
    - Implement beam search for better text generation
-   - Add temperature parameter for controlling randomness
    - Experiment with larger transformer architectures
    - Add model checkpointing and early stopping
-   - Implement model comparison metrics
+   - Implement model comparison metrics, perplexity, BLEU
+
+
+**Other**
+
+   - Try LoRA / PEFT Fine-Tuning of GPT-2
+   - Explore longer context generation with FlashAttention or Rotary PE
+   - Try Instruction-Tuned or RLHF Models, task alignment
+   - Quantisation + ONNX/GGUF
 
 
 
