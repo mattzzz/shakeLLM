@@ -40,6 +40,7 @@ The project contains several implementations of text generation models, ordered 
    - Baseline implementation with simplest architecture
    - Expected to perform fourth due to basic architecture
    - ~112k params
+   - total training time on Apple M3 Pro ~1.3h
 
 ### **Character-Level Attention** (`char-level-attention.py`)
    - Attention-based model operating at the character level
@@ -48,6 +49,7 @@ The project contains several implementations of text generation models, ordered 
    - Third in expected performance
    - Good intermediate step between LSTM and transformer models
    - ~56k params
+   - total training time on GTX 1080 ~2h
 
 ### **Word-Level Attention** (`word-level-attention.py`)
    - Implements a transformer-based architecture
@@ -55,6 +57,7 @@ The project contains several implementations of text generation models, ordered 
    - Includes positional encoding and transformer blocks
    - More sophisticated approach for word-level generation
    - ~5.7M params
+   - total training time on GTX 1080 ~30mins
 
 ```bash
 $ python word-level-attention.py 
@@ -70,6 +73,7 @@ to be or not to be blessing to be with thine and his ancient traitor a maid some
    - Expected best performance expected due to efficient tokenization
    - Modern approach to handling vocabulary
    - ~1.5M params
+   - total training time on GTX 1080 ~15mins
 
 
 ```bash
