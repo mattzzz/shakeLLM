@@ -45,12 +45,14 @@ model.fit(X, y, batch_size=128, epochs=10)
 def generate_text(seed, length=200):
     result = seed.lower()
     for _ in range(length):
-        input_seq = [char2idx.get(c, 0) for c in result[-seq_length:]]
-        input_seq = np.expand_dims(input_seq, axis=0)
+        input_seq = [char2idx.get(c, 0) for c in result[-100:]]  # Take last 100 chars
+        input_seq = np.pad(input_seq, (100 - len(input_seq), 0))  # Pad if < 100
+        input_seq = np.expand_dims(input_seq, axis=0)  # Shape: (1, 100)
         pred = model.predict(input_seq, verbose=0)[0]
         next_idx = np.random.choice(len(pred), p=pred)
         result += idx2char[next_idx]
     return result
+
 
 print(generate_text("to be or not to be"))
 

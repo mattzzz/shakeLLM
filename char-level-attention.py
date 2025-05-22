@@ -29,6 +29,7 @@ y = np.array(y)
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Embedding, Dense, LayerNormalization, Dropout, Layer
 import tensorflow as tf
+from tensorflow.keras.optimizers import Adam
 
 class MultiHeadSelfAttention(Layer):
     def __init__(self, embed_dim, num_heads=2):
@@ -95,7 +96,8 @@ x = Dropout(0.2)(x)
 outputs = Dense(vocab_size, activation='softmax')(x)
 
 model = Model(inputs=inputs, outputs=outputs)
-model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+optimizer = Adam(learning_rate=1e-4, clipnorm=1.0)
+model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy')
 model.summary()
 
 

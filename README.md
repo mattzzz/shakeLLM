@@ -42,6 +42,14 @@ The project contains several implementations of text generation models, ordered 
    - ~112k params
    - total training time on Apple M3 Pro ~1.3h
 
+
+```bash
+42021/42021 [==============================] - 464s 11ms/step - loss: 1.4358
+to be or not to bedinezeruse hermase, heal all some here’er of lost to biddy, the head. master
+each whether us, and then being his own samides of each poid,
+well store them to pantly, you’v’lled her, and they, that wer
+```
+
 ### **Character-Level Attention** (`char-level-attention.py`)
    - Attention-based model operating at the character level
    - Combines the benefits of attention with character-level modeling
@@ -50,6 +58,13 @@ The project contains several implementations of text generation models, ordered 
    - Good intermediate step between LSTM and transformer models
    - ~56k params
    - total training time on GTX 1080 ~2h
+
+```bash
+84041/84041 [==============================] - 881s 10ms/step - loss: 3.0128
+to be or not to be,ethteitetloiiacnn iai re np hoy i et ts   rn  t hne win tln, ftulaic e lhn ir 
+ oea eny x tf,htpkyfha,m ’ctcyis1oeiwei4d0,to hho dp
+a dif,fhss nne tuoicnnr;;irnrbeweallcrrais r en wakn heerfof flrne f
+```
 
 ### **Word-Level Attention** (`word-level-attention.py`)
    - Implements a transformer-based architecture
