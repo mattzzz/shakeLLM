@@ -101,6 +101,7 @@ class PositionalEncoding(Layer):
 
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Embedding, Dense, GlobalAveragePooling1D, Dropout
+from tensorflow.keras.optimizers.legacy import Adam
 
 embed_dim = 64
 num_heads = 2
@@ -117,22 +118,16 @@ x = Dropout(0.2)(x)
 outputs = Dense(vocab_size, activation='softmax')(x)
 
 model = Model(inputs, outputs)
-# from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.optimizers.legacy import Adam
 
 from tensorflow.keras.metrics import TopKCategoricalAccuracy
 
 optimizer = Adam(learning_rate=1e-4)
 model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy', TopKCategoricalAccuracy(k=5)])
-
-# model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 model.summary()
 
 
 model.fit(X, y, batch_size=128, epochs=15)
 
-
-import random
 
 def generate_text(seed_text, next_words=50):
     for _ in range(next_words):

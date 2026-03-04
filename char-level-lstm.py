@@ -1,3 +1,7 @@
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense, Embedding
+
 # Read in text
 with open("shakespeare.txt", "r", encoding="utf-8") as f:
     text = f.read().lower()
@@ -21,13 +25,8 @@ for i in range(0, len(encoded_text) - seq_length, step):
     sequences.append(encoded_text[i: i + seq_length])
     next_chars.append(encoded_text[i + seq_length])
 
-import numpy as np
 X = np.array(sequences)
 y = np.array(next_chars)
-
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Embedding
 
 model = Sequential([
     Embedding(vocab_size, 64, input_length=seq_length),

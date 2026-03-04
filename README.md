@@ -92,23 +92,80 @@ to be or not to be blessing to be with thine and his ancient traitor a maid some
 
 
 ```bash
-$ python subword-attention.py 
+$ python subword-attention.py
 
 Epoch 5/5
 20768/20768 [==============================] - 165s 8ms/step - loss: 4.8897
 to be, or not to be to your lordship upon a man? a widow. the brother the shallow lords to music, the thieves in patience, i are sick, calling forlorn will as can approach this man. , this, but so most earth is over my beautyuous
 ```
 
+### **GPT Decoder** (`gpt-decoder.py`)
+   - Decoder-only transformer — the architecture behind GPT
+   - Fixes the three key flaws in the earlier attention models (see analysis below)
+   - BPE tokenization (reuses the tokenizer trained in `subword-attention.py`)
+   - 4 stacked transformer layers vs 1 in previous models
+   - Learned positional embeddings instead of sinusoidal
+   - GELU activation (used in GPT-2/3) instead of ReLU
+   - Temperature-controlled generation
+   - ~3M params
+   - total training time on GTX 1080 ~55mins
 
+```bash
+$ python gpt-decoder.py
+
+Epoch 5/5
+20768/20768 [==============================] - 679s 33ms/step - loss: 4.1711
+to be, or not to be music from from when it is, the but then did, although, how to make for pyramus call to sing but such to be but plain fair she did then the story of this from the place of the other witness of this deep disgrace, for there, and in these creatures where their love is too sweet, and all their love is not old, in many giddy bidding. but to the sight of all that glory for the earth. what shall i think? that is not
+```
+
+---
+
+## Architecture Analysis
+
+### Why Each Model Performed How It Did
+
+**char-level-lstm** achieved the lowest *numerical* loss (1.43), but loss values aren't comparable across models because character-level vocab (~70 tokens) is much smaller than word or subword vocab. The output produces real words but breaks down quickly — LSTM struggles to hold coherent context beyond ~50 characters and has no mechanism to relate distant tokens.
+
+**char-level-attention** produced the worst output (essentially noise). Two structural problems:
+1. `GlobalAveragePooling1D` collapses the entire sequence into one vector, discarding all positional information — the attention computation is then wasted.
+2. No causal masking means the model attends to future characters during training, but generates one character at a time at inference — a mismatch between train and test regimes.
+
+**word-level-attention** produced the most readable output despite a high-looking loss — the loss is high because it's predicting over a ~25k word vocabulary. Positional encoding and transformer blocks help significantly. Limited by a tiny context window (10 words) and still suffers from `GlobalAveragePooling1D` and no causal masking.
+
+**subword-attention** produced the best output. BPE tokenization handles punctuation and rare words efficiently, `seq_length=32` covers more semantic context than 10 words, and training is fast. Has the same structural flaws as the word-level model but benefits more from its tokenization.
+
+### The Three Key Gaps vs a Real LLM
+
+| Issue | Earlier attention models | GPT Decoder |
+|---|---|---|
+| **Causal masking** | No — attends to future tokens during training | Yes — upper-triangular mask blocks future positions |
+| **Sequence output** | `GlobalAveragePooling1D` collapses to one vector | Last-token representation preserves sequential context |
+| **Depth** | 1 transformer layer | 4 stacked transformer layers |
+
+**Causal masking** is the most important fix. Without it, the model learns a different task during training (fill in the middle) than it performs at inference (predict the next token), so the learned representations don't transfer cleanly.
+
+**Last-token selection** (`x[:, -1, :]`) uses the final position's representation — which, with causal masking, has attended to the entire prefix but nothing beyond. This is how GPT and every modern decoder-only LLM produces next-token predictions.
+
+**Depth** is where transformers get their expressiveness. Each layer can represent increasingly abstract features; a single layer is a severe bottleneck.
+
+### What's Still Missing vs GPT-2
+
+Even the GPT decoder here is a toy. Real GPT-2 small adds:
+- 12 layers, 12 attention heads, 768 embedding dimensions (~117M params)
+- Pre-layer normalisation (norm before attention, not after)
+- Rotary or learned positional embeddings at scale
+- Trained on hundreds of millions of tokens, not ~5M
+- Weight tying between token embedding and output projection
+
+The purpose of this project is to understand the *architecture*, not match the *scale*.
 
 ## Future Improvements
 
 **Model Enhancements**
-   - Add Top-k Sampling or Temperature Scaling
    - Implement beam search for better text generation
-   - Experiment with larger transformer architectures
+   - Add top-k / nucleus (top-p) sampling
    - Add model checkpointing and early stopping
-   - Implement model comparison metrics, perplexity, BLEU
+   - Implement comparison metrics: perplexity, BLEU
 
 
 **Other**

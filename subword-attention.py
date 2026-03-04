@@ -110,7 +110,6 @@ class PositionalEncoding(Layer):
 
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Embedding, Dense, GlobalAveragePooling1D, Dropout
-# Same TransformerBlock & PositionalEncoding from before...
 
 inputs = Input(shape=(seq_length,))
 x = Embedding(input_dim=vocab_size, output_dim=64)(inputs)
